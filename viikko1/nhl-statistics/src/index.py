@@ -1,7 +1,7 @@
 from player_reader import PlayerReader
 from statistics_service import StatisticsService
 
-
+# muutos kopiossa
 def main():
     stats = StatisticsService(
         PlayerReader("https://studies.cs.helsinki.fi/nhlstats/2024-25/players.txt")
