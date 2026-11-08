@@ -69,7 +69,7 @@ def select_players(stats):
         return select_by_nationality(stats)
     return select_by_team(stats)
 
-
+# muutos kopiossa
 def main():
     console = Console()
     season = Prompt.ask("Season", choices=seasons, default="2024-25")
