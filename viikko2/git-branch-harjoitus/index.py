@@ -6,6 +6,8 @@ from erotus import erotus
 
 logger("aloitetaan") # muutos mainissa
 
+# muutos
+
 x = int(input("luku 1: "))
 y = int(input("luku 2: "))
 print(f"{summa(x, y)}") # muutos mainissa
