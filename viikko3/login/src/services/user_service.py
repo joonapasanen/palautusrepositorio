@@ -1,7 +1,6 @@
 from entities.user import User
-from repositories.user_repository import (
+from repositories.user_repository import \
     user_repository as default_user_repository
-)
 
 
 class UserInputError(Exception):
@@ -40,7 +39,12 @@ class UserService:
         if not username or not password:
             raise UserInputError("Username and password are required")
 
-        if len(username) < 3 or len(password) < 8:
+        if (
+            len(username) < 3
+            or len(password) < 8
+            or password.isalpha()
+            or password != password_confirmation
+        ):
             raise AuthenticationError("Invalid username or password")
 
         if self._user_repository.find_by_username(username):
