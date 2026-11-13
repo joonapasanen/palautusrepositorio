@@ -1,4 +1,5 @@
 # palautusrepositorio
 
-https://github.com/joonapasanen/ohtuvarasto
-https://github.com/joonapasanen/webcounter
+[Ohtuvarasto](https://github.com/joonapasanen/ohtuvarasto)
+
+[Webcounter](https://github.com/joonapasanen/webcounter)
