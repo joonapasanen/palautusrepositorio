@@ -1,0 +1,1 @@
+Agentti lyhensi testitiedoston pituutta noin 120 rivistä noin 60 riviin ja teki testeistä helpommin ymmärretäviä poistamalla toisteisen koodin määrää. Testien toiminallisuus ei myöskään muuttunut, joten kokemus oli erittäin hyvä.
