@@ -115,5 +115,3 @@ class TestKauppa(unittest.TestCase):
         
         self.assertEqual(self.varasto_mock.palauta_varastoon.call_count, 1)
         self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", KAUPAN_TILI, 5)
-
-
