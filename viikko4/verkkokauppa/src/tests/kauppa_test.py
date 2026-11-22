@@ -64,3 +64,54 @@ class TestKauppa(unittest.TestCase):
 
         # tuote 3 on loppu, joten summaan lasketaan vain tuote 1
         self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", KAUPAN_TILI, 5)
+
+    def test_aloita_asiointi_nollaa_edellisen_ostoksen_tiedot(self):
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", KAUPAN_TILI, 3)
+
+    def test_jokaiselle_maksutapahtumalle_pyydetaan_uusi_viitenumero(self):
+        self.viitegeneraattori_mock.uusi.side_effect = [1, 2, 3]
+
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 1)
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 1, "12345", KAUPAN_TILI, 5)
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 2)
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 2, "12345", KAUPAN_TILI, 3)
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 3)
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 3, "12345", KAUPAN_TILI, 5)
+
+    def test_korista_poistettu_tuote_palautetaan_varastoon_eika_sita_veloiteta(self):
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.poista_korista(2)
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.varasto_mock.palauta_varastoon.assert_called_with(Tuote(2, "leipä", 3))
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", KAUPAN_TILI, 5)
+
+    def test_korista_poistetaan_vain_yksi_kappale_samaa_tuotetta(self):
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.poista_korista(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+        
+        self.assertEqual(self.varasto_mock.palauta_varastoon.call_count, 1)
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", ANY, "12345", KAUPAN_TILI, 5)
